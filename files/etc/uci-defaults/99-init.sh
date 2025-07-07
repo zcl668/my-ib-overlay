@@ -57,23 +57,54 @@ uci set "dhcp.@domain[-1].name=time.android.com"
 uci set "dhcp.@domain[-1].ip=203.107.6.88"
 uci commit dhcp
 
-# 单网口采用dhcp模式，ip需要在上级路由器查询
-# 多网口则是一般的路由器模式 lan口ip地址是192.168.99.1 wan口是自动获取模式
-count=0
-for iface in $(ls /sys/class/net | grep -v lo); do
-    if [ -e /sys/class/net/$iface/device ] && [[ $iface == eth* || $iface == en* ]]; then
-        count=$((count + 1))
-    fi
-done
-
+# 网络设置
 if [ "$count" -eq 1 ]; then
-    echo "Detected single Ethernet interface, configuring LAN as DHCP"
+    # 单网口设备 类似于NAS模式 动态获取ip模式 具体ip地址取决于上一级路由器给它分配的ip 也方便后续你使用web页面设置旁路由
+    # 单网口设备 不支持修改ip 不要在此处修改ip
     uci set network.lan.proto='dhcp'
-    uci commit network
 elif [ "$count" -gt 1 ]; then
-    echo "Multiple Ethernet interfaces found, keeping LAN static IP"
+    # 提取第一个接口作为WAN
+    wan_ifname=$(echo "$ifnames" | awk '{print $1}')
+    # 剩余接口保留给LAN
+    lan_ifnames=$(echo "$ifnames" | cut -d ' ' -f2-)
+    # 设置WAN接口基础配置
+    uci set network.wan=interface
+    # 提取第一个接口作为WAN
+    uci set network.wan.device="$wan_ifname"
+    # WAN接口默认DHCP
+    uci set network.wan.proto='dhcp'
+    # 设置WAN6绑定网口eth0
+    uci set network.wan6=interface
+    uci set network.wan6.device="$wan_ifname"
+    # 更新LAN接口成员
+    # 查找对应设备的section名称
+    section=$(uci show network | awk -F '[.=]' '/\.@?device\[\d+\]\.name=.br-lan.$/ {print $2; exit}')
+    if [ -z "$section" ]; then
+        echo "error：cannot find device 'br-lan'." >>$LOGFILE
+    else
+        # 删除原来的ports列表
+        uci -q delete "network.$section.ports"
+        # 添加新的ports列表
+        for port in $lan_ifnames; do
+            uci add_list "network.$section.ports"="$port"
+        done
+        echo "ports of device 'br-lan' are update." >>$LOGFILE
+    fi
+    # LAN口设置静态IP
+    uci set network.lan.proto='static'
+    # 多网口设备 支持修改为别的ip地址,别的地址应该是网关地址，形如192.168.xx.1 项目说明里都强调过。
+    # 大家不能胡乱修改哦 比如有人修改为192.168.99.55 这是错误的理解 这个项目不能提前设置旁路地址
+    # 旁路的设置分2类情况,情况一是单网口的设备,默认是DHCP模式，ip应该在上一级路由器里查看。之后进入web页在设置旁路。
+    # 情况二旁路由如果是多网口设备，也应当用网关访问网页后，在自行在web网页里设置。总之大家不能直接在代码里修改旁路网关。千万不要徒增bug啦。
     uci set network.lan.ipaddr='192.168.99.1'
-    uci commit network
+    uci set network.lan.netmask='255.255.255.0'
 fi
+
+# 设置所有网口可访问网页终端
+uci delete ttyd.@ttyd[0].interface
+
+# 设置所有网口可连接 SSH
+uci set dropbear.@dropbear[0].Interface=''
+uci commit
 
 exit 0
