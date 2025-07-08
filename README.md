@@ -16,7 +16,12 @@ cd openwrt-imagebuilder-24.10.2-x86-64.Linux-x86_64/
 ## 定位到ImageBuilder的根目录下
 
 ## 下载整个项目的 master.zip
+
 ```
+wget -O master.zip https://github.com/wukongdaily/ib-overlay/archive/refs/heads/master.zip
+```
+[![Github](https://img.shields.io/badge/如果下载不动,可套用加速前缀,点这里前往-d6acef?logo=github&logoColor=fff&labelColor=000&style=for-the-badge)](https://wkdaily.cpolar.top/archives/1) 
+``` 
 wget -O master.zip https://gh-proxy.com/https://github.com/wukongdaily/ib-overlay/archive/refs/heads/master.zip
 ```
 ## 解压 master.zip 到当前目录，去除无关文件
@@ -24,10 +29,11 @@ wget -O master.zip https://gh-proxy.com/https://github.com/wukongdaily/ib-overla
 unzip master.zip -d tempdir
 rm -f tempdir/*/.gitignore tempdir/*/README.md tempdir/*/LICENSE
 mv tempdir/*/* ./
+mv tempdir/*/.config ./ 2>/dev/null
 rm -rf tempdir
 ls -lah
 ```
-> 当然你也可以先【fork】本项目 将项目同步到自己的空间，做一些修改、删减。然后在下载整个项目的zip 或者 git clone
+> ### 当然你也可以先【fork】本项目 将项目同步到自己的空间，做一些修改、删减。然后在下载整个项目的zip 或者 git clone
 ### 构建之前 安装必备工具 飞牛NAS系统为例 需要安装gawk
 ```bash
 sudo apt update -y
