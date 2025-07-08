@@ -57,6 +57,19 @@ uci set "dhcp.@domain[-1].name=time.android.com"
 uci set "dhcp.@domain[-1].ip=203.107.6.88"
 uci commit dhcp
 
+# 计算网卡数量
+count=0
+ifnames=""
+for iface in /sys/class/net/*; do
+    iface_name=$(basename "$iface")
+    # 检查是否为物理网卡（排除回环设备和无线设备）
+    if [ -e "$iface/device" ] && echo "$iface_name" | grep -Eq '^eth|^en'; then
+        count=$((count + 1))
+        ifnames="$ifnames $iface_name"
+    fi
+done
+# 删除多余空格
+ifnames=$(echo "$ifnames" | awk '{$1=$1};1')
 # 网络设置
 if [ "$count" -eq 1 ]; then
     # 单网口设备 类似于NAS模式 动态获取ip模式 具体ip地址取决于上一级路由器给它分配的ip 也方便后续你使用web页面设置旁路由
