@@ -3,19 +3,19 @@
 # 先执行 prepare-packages.sh 此脚本用于拷贝所有自定义ipk到packages目录
 sh prepare-packages.sh
 # 仓库内的包名
-PACKAGES=""
-PACKAGES="$PACKAGES curl"
-PACKAGES="$PACKAGES -dnsmasq"
-PACKAGES="$PACKAGES dnsmasq-full"
-PACKAGES="$PACKAGES luci"
-PACKAGES="$PACKAGES bash"
-PACKAGES="$PACKAGES luci-i18n-ttyd-zh-cn"
-PACKAGES="$PACKAGES openssh-sftp-server"
-PACKAGES="$PACKAGES luci-i18n-package-manager-zh-cn"
-PACKAGES="$PACKAGES luci-compat"
-PACKAGES="$PACKAGES luci-i18n-firewall-zh-cn"
-PACKAGES="$PACKAGES luci-i18n-base-zh-cn"
-PACKAGES="$PACKAGES luci-i18n-dockerman-zh-cn"
+BASE_PACKAGES=""
+BASE_PACKAGES="$BASE_PACKAGES curl"
+BASE_PACKAGES="$BASE_PACKAGES -dnsmasq"
+BASE_PACKAGES="$BASE_PACKAGES dnsmasq-full"
+BASE_PACKAGES="$BASE_PACKAGES luci"
+BASE_PACKAGES="$BASE_PACKAGES bash"
+BASE_PACKAGES="$BASE_PACKAGES luci-i18n-ttyd-zh-cn"
+BASE_PACKAGES="$BASE_PACKAGES openssh-sftp-server"
+BASE_PACKAGES="$BASE_PACKAGES luci-i18n-package-manager-zh-cn"
+BASE_PACKAGES="$BASE_PACKAGES luci-compat"
+BASE_PACKAGES="$BASE_PACKAGES luci-i18n-firewall-zh-cn"
+BASE_PACKAGES="$BASE_PACKAGES luci-i18n-base-zh-cn"
+BASE_PACKAGES="$BASE_PACKAGES luci-i18n-dockerman-zh-cn"
 
 # 使用条件:在extra-packages下放置了相关ipk或run
 # 这是自定义的包 你可以用#注释掉不需要的包 也可以添加更多的包 
@@ -61,7 +61,7 @@ for pkg in $CUSTOM_PACKAGES; do
 done
 
 # 拼接
-PACKAGES="$PACKAGES $CUSTOM_PACKAGES"
+PACKAGES="$BASE_PACKAGES $CUSTOM_PACKAGES"
 
 # 若构建openclash 则添加内核
 if echo "$PACKAGES" | grep -q "luci-app-openclash"; then
