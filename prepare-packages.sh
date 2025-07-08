@@ -22,4 +22,5 @@ find "$TEMP_DIR" -type f -name "*.ipk" -exec cp {} "$TARGET_DIR"/ \;
 find "$BASE_DIR" -maxdepth 1 -type f -name "*.ipk" -exec cp {} "$TARGET_DIR"/ \;
 
 echo "✅ 所有 .ipk 已整理至 $TARGET_DIR/"
+bash check.sh
 
