@@ -3,7 +3,7 @@ Custom overlay files and scripts for OpenWrt ImageBuilder 24.10.2
 <br>
 此项目 只记录了我修改的文件和脚本，ImageBuilder工具包并不在其中.你可以把它当做模板,适当修改,就能定制属于自己的固件了<br>
 
-## 下载ImageBuilder
+## 1、下载ImageBuilder
 ```
 # 下载
 wget https://mirrors.aliyun.com/openwrt/releases/24.10.2/targets/x86/64/openwrt-imagebuilder-24.10.2-x86-64.Linux-x86_64.tar.zst
@@ -15,7 +15,7 @@ cd openwrt-imagebuilder-24.10.2-x86-64.Linux-x86_64/
 
 ## 定位到ImageBuilder的根目录下
 
-## 下载整个项目的 master.zip
+## 2、下载整个项目的 master.zip
 
 ```
 wget -O master.zip https://github.com/wukongdaily/ib-overlay/archive/refs/heads/master.zip
@@ -24,7 +24,7 @@ wget -O master.zip https://github.com/wukongdaily/ib-overlay/archive/refs/heads/
 ``` 
 wget -O master.zip https://gh-proxy.com/https://github.com/wukongdaily/ib-overlay/archive/refs/heads/master.zip
 ```
-## 解压 master.zip 到当前目录，去除无关文件
+## 3、解压 master.zip 到当前目录(ImageBuilder的根目录)，去除无关文件
 ```
 unzip master.zip -d tempdir
 rm -f tempdir/*/.gitignore tempdir/*/README.md tempdir/*/LICENSE
@@ -33,14 +33,21 @@ mv tempdir/*/.config ./ 2>/dev/null
 rm -rf tempdir
 ls -lah
 ```
-> ### 当然你也可以先【fork】本项目 将项目同步到自己的空间，做一些修改、删减。然后在下载整个项目的zip 或者 git clone
-### 构建之前 安装必备工具 飞牛NAS系统为例 需要安装gawk
+> ### ⚠️ 如果你觉得`extra-packages` 目录太大了，你也可以先【fork】本项目
+> ### 将项目同步到自己的空间后，做一些修改、删减。然后在下载整个项目的zip 这样就比较小了
+
+## 4、安装必要依赖 飞牛NAS系统为例 需要安装gawk
+> 其他系统请参考官网文档 https://openwrt.org/zh/docs/guide-user/additional-software/imagebuilder
 ```bash
 sudo apt update -y
 sudo apt install gawk -y
 ```
-## 关键修改说明
-> `.config` 此文件是全部配置，是.开头的隐藏文件,一般不需要动。如果 想去掉ext4 格式 可以在这里改<br>
+## ⚠️ 关键修改说明（必读）
+> `.config` 此文件是全部配置，是.开头的隐藏文件,一般不需要动。我这边去掉了ext4格式 如下 如果你需要也可以自由修改为y<br>
+```bash
+CONFIG_USES_EXT4=n
+CONFIG_TARGET_ROOTFS_EXT4FS=n
+```
 > `repositories.conf`  这是仓库地址 你可以修改它 将ImageBuilder工具中的仓库地址替换为阿里云仓库 加快构建时的下载速度<br>
 > `extra-packages` 这是我新建的目录 可以存放run文件。也可以存放自定义ipk 但最好是run 因为这样比较整齐 是一个整体<br>
 
