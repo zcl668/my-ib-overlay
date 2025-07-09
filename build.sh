@@ -20,10 +20,12 @@ BASE_PACKAGES="$BASE_PACKAGES luci-i18n-base-zh-cn"
 BASE_PACKAGES="$BASE_PACKAGES luci-i18n-dockerman-zh-cn"
 # 文件管理器
 BASE_PACKAGES="$BASE_PACKAGES luci-i18n-filemanager-zh-cn"
-# openlist用来平替alist
-BASE_PACKAGES="$BASE_PACKAGES luci-i18n-openlist-zh-cn"
+# openlist用来平替alist 但阿里镜像仓库暂时没有 若勾选此项需在repositories.conf中启用官方源
+# 其实可以弯道实现安装openlist 因为istore商店里有该插件 你可以勾选下列的luci-app-store
+#BASE_PACKAGES="$BASE_PACKAGES luci-i18n-openlist-zh-cn"
 
-#BASE_PACKAGES="$BASE_PACKAGES luci-i18n-p910nd-zh-cn"
+#打印机相关
+BASE_PACKAGES="$BASE_PACKAGES luci-i18n-p910nd-zh-cn"
 #BASE_PACKAGES="$BASE_PACKAGES luci-i18n-openvpn-zh-cn"
 
 
