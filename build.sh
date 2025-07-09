@@ -2,11 +2,13 @@
 
 # 先执行 prepare-packages.sh 此脚本用于拷贝所有自定义ipk到packages目录
 sh prepare-packages.sh
-# 以下仓库内的包名 你可以在openwrt官网仓库查询插件名称
+# 以下是仓库内的包名 你可以在openwrt官网仓库查询插件名称
 # https://downloads.openwrt.org/releases/24.10.2/packages/x86_64/luci/
+# https://mirrors.aliyun.com/openwrt/releases/24.10.2/packages/x86_64/luci/
 BASE_PACKAGES=""
 BASE_PACKAGES="$BASE_PACKAGES curl"
 BASE_PACKAGES="$BASE_PACKAGES -dnsmasq"
+# 此处为什么勾选完整版dnsmasq-full 因为openclash需要该依赖 由于dnsmasq和dnsmasq-full 在安装上互斥 因此只能保留一个 减号代表去除
 BASE_PACKAGES="$BASE_PACKAGES dnsmasq-full"
 BASE_PACKAGES="$BASE_PACKAGES luci"
 BASE_PACKAGES="$BASE_PACKAGES bash"
@@ -84,24 +86,30 @@ PACKAGES="$BASE_PACKAGES $CUSTOM_PACKAGES"
 if echo "$PACKAGES" | grep -q "luci-app-openclash"; then
     echo "✅ [构建逻辑] 已选择 luci-app-openclash，添加 openclash core"
     mkdir -p files/etc/openclash/core
-    cp extra-packages/temp-unpack/clash_meta files/etc/openclash/core/clash_meta
+    if [ -f extra-packages/temp-unpack/clash_meta ]; then
+        cp extra-packages/temp-unpack/clash_meta files/etc/openclash/core/clash_meta
+    else
+        echo "⚠️ [警告] 缺少 clash_meta 内核,跳过复制,你应该确保extra-packages目录下有相关run文件"
+    fi
 else
     echo "⚪️ [构建逻辑] 未选择 luci-app-openclash"
-    if [ -d files/etc/openclash ]; then
-      rm -rf files/etc/openclash
-    fi
+    [ -d files/etc/openclash ] && rm -rf files/etc/openclash
 fi
+
 
 # 若构建luci-app-adguardhome 则添加内核
 if echo "$PACKAGES" | grep -q "luci-app-adguardhome"; then
     echo "✅ [构建逻辑] 已选择 luci-app-adguardhome，添加 AdGuardHome core"
-    cp extra-packages/temp-unpack/AdGuardHome/AdGuardHome files/usr/bin/AdGuardHome
+    if [ -f extra-packages/temp-unpack/AdGuardHome/AdGuardHome ]; then
+        cp extra-packages/temp-unpack/AdGuardHome/AdGuardHome files/usr/bin/AdGuardHome
+    else
+        echo "⚠️ [警告] 缺少 AdGuardHome内核,跳过复制,你应该确保extra-packages目录下有相关run文件"
+    fi
 else
     echo "⚪️ [构建逻辑] 未选择 luci-app-adguardhome"
-    if [ -f files/usr/bin/AdGuardHome ]; then
-      rm -rf files/usr/bin/AdGuardHome
-    fi
+    [ -f files/usr/bin/AdGuardHome ] && rm -f files/usr/bin/AdGuardHome
 fi
+
 
 # 开始构建 软件包大小1024代表1GB 
 # 可选参数FILES=files 代表files目录中若有文件 则覆盖openwrt的根目录 原样注入  
