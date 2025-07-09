@@ -2,7 +2,8 @@
 
 # 先执行 prepare-packages.sh 此脚本用于拷贝所有自定义ipk到packages目录
 sh prepare-packages.sh
-# 仓库内的包名
+# 以下仓库内的包名 你可以在openwrt官网仓库查询插件名称
+# https://downloads.openwrt.org/releases/24.10.2/packages/x86_64/luci/
 BASE_PACKAGES=""
 BASE_PACKAGES="$BASE_PACKAGES curl"
 BASE_PACKAGES="$BASE_PACKAGES -dnsmasq"
@@ -15,41 +16,55 @@ BASE_PACKAGES="$BASE_PACKAGES luci-i18n-package-manager-zh-cn"
 BASE_PACKAGES="$BASE_PACKAGES luci-compat"
 BASE_PACKAGES="$BASE_PACKAGES luci-i18n-firewall-zh-cn"
 BASE_PACKAGES="$BASE_PACKAGES luci-i18n-base-zh-cn"
+# 如果勾选了docker 务必保证软件包大小ROOTFS_PARTSIZE至少大于512 目前1024
 BASE_PACKAGES="$BASE_PACKAGES luci-i18n-dockerman-zh-cn"
+# 文件管理器
+BASE_PACKAGES="$BASE_PACKAGES luci-i18n-filemanager-zh-cn"
+# openlist用来平替alist
+BASE_PACKAGES="$BASE_PACKAGES luci-i18n-openlist-zh-cn"
 
-# 使用条件:在extra-packages下放置了相关ipk或run
-# 这是自定义的包 你可以用#注释掉不需要的包 也可以添加更多的包 
+#BASE_PACKAGES="$BASE_PACKAGES luci-i18n-p910nd-zh-cn"
+#BASE_PACKAGES="$BASE_PACKAGES luci-i18n-openvpn-zh-cn"
+
+
+
+# 下面是自定义的包 你可以用#注释掉不需要的包 也可以添加更多的包 
+# 使用条件:在extra-packages下放置了相关run或者ipk
 CUSTOM_PACKAGES=""
-# 文件传输 luci-app-filetransfer
+# 第三方插件 文件传输 luci-app-filetransfer
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-lib-fs"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-lua-runtime"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-filetransfer"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-filetransfer-zh-cn"
-# 第三方软件 主题 luci-theme-argon 紫色主题 3个ipk
+# 第三方插件 argon主题 luci-theme-argon 紫色主题 3个ipk
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-theme-argon"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-argon-config-zh-cn"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-argon-config"
-# 第三方插件 openclash 内核放在files/etc/openclash/core/clash_meta
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-openclash"
-# 第三方插件 luci-app-passwall 包含内部组件
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-passwall"
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-passwall-zh-cn"
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES geoview"
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES xray-core"
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES sing-box"
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES hysteria"
-# 第三方插件 luci-app-ssr-plus 尤其注意要包含 shadowsocks-libev-ss-server
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-ssr-plus"
-# 第三方插件 luci-app-homeproxy
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-homeproxy-zh-cn"
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-homeproxy"
+
+# 第三方插件 istore 应用商店
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-store"
+# 第三方插件 首页和网络向导
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-quickstart"
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-quickstart-zh-cn"
+
 # 第三方插件 luci-app-adguardhome 去广告
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-adguardhome"
-# istore 应用商店
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-store"
-# 首页和网络向导
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-quickstart"
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-quickstart-zh-cn"
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-adguardhome"
+# 第三方插件 openclash 内核放在files/etc/openclash/core/clash_meta 若不勾选则不集成
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-openclash"
+# 第三方插件 luci-app-passwall 包含内部组件
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-passwall"
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-passwall-zh-cn"
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES geoview"
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES xray-core"
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES sing-box"
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES hysteria"
+# 第三方插件 luci-app-ssr-plus 尤其注意要包含 shadowsocks-libev-ss-server
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-ssr-plus"
+# 第三方插件 luci-app-homeproxy
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-homeproxy-zh-cn"
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-homeproxy"
+# 第三方插件 luci-app-nikki
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-nikki-zh-cn"
 
 # ✅ 校验 CUSTOM_PACKAGES 中的包是否都存在于 packages_names.txt
 package_file="packages_names.txt"
@@ -69,7 +84,7 @@ if echo "$PACKAGES" | grep -q "luci-app-openclash"; then
     mkdir -p files/etc/openclash/core
     cp extra-packages/temp-unpack/clash_meta files/etc/openclash/core/clash_meta
 else
-    echo "❌ [构建逻辑] 未选择 luci-app-openclash"
+    echo "⚪️ [构建逻辑] 未选择 luci-app-openclash"
     if [ -d files/etc/openclash ]; then
       rm -rf files/etc/openclash
     fi
@@ -80,7 +95,7 @@ if echo "$PACKAGES" | grep -q "luci-app-adguardhome"; then
     echo "✅ [构建逻辑] 已选择 luci-app-adguardhome，添加 AdGuardHome core"
     cp extra-packages/temp-unpack/AdGuardHome/AdGuardHome files/usr/bin/AdGuardHome
 else
-    echo "❌ [构建逻辑] 未选择 luci-app-adguardhome"
+    echo "⚪️ [构建逻辑] 未选择 luci-app-adguardhome"
     if [ -f files/usr/bin/AdGuardHome ]; then
       rm -rf files/usr/bin/AdGuardHome
     fi
