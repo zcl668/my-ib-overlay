@@ -2,7 +2,7 @@
 Custom overlay files and scripts for OpenWrt ImageBuilder 24.10.2
 <br>
 此项目 只记录了我修改的文件和脚本，ImageBuilder工具包并不在其中.你可以把它当做模板,适当修改,就能定制属于自己的固件了<br>
-
+### 博客文章 https://wkdaily.cpolar.cn/archives/40
 ## 1、下载ImageBuilder
 ```
 # 下载
