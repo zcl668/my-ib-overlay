@@ -65,9 +65,21 @@ CONFIG_TARGET_ROOTFS_EXT4FS=n
 > `check.sh` 此脚本用于检测`packages`目录下所有ipk的包名 并将包名列表写入到 `packages_names.txt` 此文件在构建环节会用到 判断用户是否集成了错误的包名<br>
 > `build.sh` 此脚本用于最关键一步:构建镜像 make image<br>
 
+# 相关项目
+### Run是如何生成的 如何找run文件？如何制作run文件
+https://github.com/wukongdaily/RunFilesBuilder
+
+### 云端的ImageBuilder工作流(Github Action)
+https://github.com/wukongdaily/AutoBuildImmortalWrt
+
+### OpenWrt ImageBuilder 官网下载地址
+https://mirror-03.infra.openwrt.org/releases/24.10.2/targets/x86/64/
 
 
-
+## 默认脚本build.sh 构建的固件特点
+>> 该固件处理了docker的防火墙设置 用户无需操心容器端口无法访问等问题<br>
+>> 该固件刷入单网口设备或虚拟机时候，默认是自动获取ip模式。多网口时，默认eth0 是wan，其余自动帮你桥接为br-lan<br>
+>> 192.168.99.1 root 无密<br>
 
 
 
