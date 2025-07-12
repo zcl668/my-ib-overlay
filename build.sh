@@ -47,13 +47,13 @@ CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-argon-config"
 # 第三方插件 istore 应用商店
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-store"
 # 第三方插件 首页和网络向导
-#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-quickstart"
-#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-quickstart-zh-cn"
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-quickstart"
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-quickstart-zh-cn"
 
 # 第三方插件 luci-app-adguardhome 去广告
-#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-adguardhome"
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-adguardhome"
 # 第三方插件 openclash 内核放在files/etc/openclash/core/clash_meta 若不勾选则不集成
-#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-openclash"
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-openclash"
 # 第三方插件 luci-app-passwall 包含内部组件
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-passwall"
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-passwall-zh-cn"
@@ -64,8 +64,8 @@ CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-argon-config"
 # 第三方插件 luci-app-ssr-plus 尤其注意要包含 shadowsocks-libev-ss-server
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-ssr-plus"
 # 第三方插件 luci-app-homeproxy
-#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-homeproxy-zh-cn"
-#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-homeproxy"
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-homeproxy-zh-cn"
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-homeproxy"
 # 第三方插件 luci-app-nikki
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-nikki-zh-cn"
 
